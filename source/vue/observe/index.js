@@ -2,14 +2,14 @@ import Observe from './observe.js'
 export function initState(vm) {
     // 做不同的初始化
     let opts = vm.$options;
-    if(vm.data){
-        initData();
+    if(opts.data){
+        initData(vm);
     }
-    if(vm.computed){
-        initComputed();
+    if(opts.computed){
+        initComputed(vm);
     }
-    if(vm.watch){
-        initWatch();
+    if(opts.watch){
+        initWatch(vm);
     }
 }
 export function observe(data){
@@ -22,16 +22,16 @@ export function observe(data){
 function proxy(vm, source, key) {
     Object.defineProperty(vm,key,{
         get(){
-            return vm[source][keys];
+            return vm[source][key];
         },
-        set(){
-            vm[source][keys] = newValue;
+        set(newValue){
+            vm[source][key] = newValue;
         }
     })
 
 }
 
-function initData(){ // 将用户插入的数据 通过object.defineProperty重新定义
+function initData(vm){ // 将用户插入的数据 通过object.defineProperty重新定义
     let data = vm.$options.data;
     data = vm._data = typeof data === 'function' ? data.call(vm) : data || {};
     for(let key in data){

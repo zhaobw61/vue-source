@@ -16,3 +16,5 @@ let vm = new Vue({
         
     }
 })
+vm.arr.push(10);
+console.log(vm);
