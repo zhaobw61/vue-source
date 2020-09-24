@@ -1,6 +1,6 @@
 import { initState } from './observe/index'
 import Watcher from './observe/watcher';
-
+import { compiler, util } from './util.js'
 function Vue(options) {
     this._init(options);
 }
@@ -20,32 +20,6 @@ function query(el){
         return document.querySelector(el);
     }
     return el;
-}
-// ?: 匹配不捕获
-const defaultRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
-const util = {
-    getValue(vm, expr){
-        let keys = expr.split('.');
-        return keys.reduce((memo,current) => {
-            memo = memo[current];
-            return memo;
-        },vm)
-    },
-    compilerText(node, vm) {
-        node.textContent = node.textContent.replace(defaultRE, function(...args){
-            return util.getValue(vm, args[1]);
-        });
-    }
-}
-function compiler(node, vm){
-    let childNodes = node.childNodes;
-    [...childNodes].forEach(child => {
-        if(child.nodeType == 1) { // 1 代表元素  3表示文本
-            compiler(child, vm);
-        }else if(child.nodeType == 3) {
-            util.compilerText(child, vm);
-        }
-    })
 }
 Vue.prototype._update = function() {
     // 用用户传入的数据 去更新数据
