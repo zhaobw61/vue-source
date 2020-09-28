@@ -43,6 +43,7 @@ Vue.prototype.$mount = function() {
     let updateComponent = () => {
         vm._update();
     }
+    console.log('sd');
     new Watcher(vm, updateComponent);
 }
 

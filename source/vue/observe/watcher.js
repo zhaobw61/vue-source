@@ -1,4 +1,5 @@
 let id = 0;// 每次产生一个watcher 都要有一个唯一的标识
+import {pushTarget,popTarget} from './dep'
 class Watcher {
     /**
      * 
@@ -14,12 +15,29 @@ class Watcher {
             this.getter = exprOrFn;
         }
         this.cb = cb;
+        this.deps = [];
+        this.depsId = new Set();
         this.opts = opts;
         this.id = id++;
+
         this.get();
     }
     get() {
+        pushTarget(this);
         this.getter();
+        popTarget();
+    }
+    addDep(dep){
+        let id = dep.id;
+        if(!this.depsId.has(id)){
+            this.depsId.add(id);
+            this.deps.push(dep);
+            dep.addSub(this);
+        }
+
+    }
+    update(){
+        this.get();
     }
 }
 export default Watcher;

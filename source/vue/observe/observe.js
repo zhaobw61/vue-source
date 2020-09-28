@@ -1,17 +1,23 @@
 import {observe} from './index';
 import { arrayMethods, observerArray} from './array';
+import Dep from './dep';
 export function defineReactive(data, key, value) {
     // 如果value 依旧是一个对象的话 需要深度观察
     observe(value);
+    let dep = new Dep();
     Object.defineProperty(data, key, {
         get() {
-            console.log('get');
+            if(Dep.target) {
+                dep.depend();
+                // dep.addSub(Dep.target);
+            }
             return value;
         },
         set(newValue) {
-            console.log('set');
-            if (newValue === value) return;
+            if(newValue === value) return;
+            observe(newValue);
             value = newValue;
+            dep.notify();
         }
     })
 }
