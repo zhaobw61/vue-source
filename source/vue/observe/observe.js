@@ -23,6 +23,11 @@ export function defineReactive(data, key, value) {
 }
 class Observe {
     constructor(data) { // 双向绑定要观察的对象
+        this.dep = new Dep();
+
+        Object.defineProperty(data, '__ob__',{
+            get:()=>this
+        });
         if(Array.isArray(data)) {
             // 拦截数组的方法
             data.__proto__ = arrayMethods;
