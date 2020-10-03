@@ -9,6 +9,9 @@ export const util = {
         },vm)
     },
     compilerText(node, vm) {
+        if(!node.expr) {
+            node.expr = node.textContent;
+        }
         node.textContent = node.textContent.replace(defaultRE, function(...args){
             return util.getValue(vm, args[1]);
         });
