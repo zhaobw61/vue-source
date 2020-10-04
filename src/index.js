@@ -1,19 +1,8 @@
-import Vue from 'vue';
-let vm = new Vue({
-    el:'#app',
-    data(){
-        return {
-            msg:'hello',
-            school:{name:'zf',age:10},
-            arr:[1,2,3]
-        }
-    },
-    computed: {
-        
-    },
-    watch: {
-        
-    }
-})
-vm.arr.push(10);
-console.log(vm);
+import {h} from './vdom/index'
+let oldVnode = h(
+    'div',{id:'container'},
+    h('span', {style:{color:'red'}},'hello'),
+    'zf'
+);
+
+console.log(oldVnode);
