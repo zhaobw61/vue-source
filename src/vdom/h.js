@@ -11,6 +11,6 @@ export default function h(tag, props, ...children){
             return vnode(undefined, undefined, undefined, undefined, child);
         }
     })
-    return vnode(tag,props,key,children,text);
+    return vnode(tag,props,key,children);
 }
 
