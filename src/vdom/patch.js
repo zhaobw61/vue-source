@@ -90,7 +90,7 @@ export function patch(oldVnode, newVnode) {
     }
 }
 function isSameVnode(oldVnode,newVnode) {
-
+    return (oldVnode.tag === newVnode.tag) && (oldVnode.key === newVnode.key)
 }
 // 虚拟dom核心代码 更新子节点
 function updateChildren(parent, oldChildren, newChildren) {
@@ -105,8 +105,26 @@ function updateChildren(parent, oldChildren, newChildren) {
     let newEndIndex = newChildren.length - 1;
     let newEndVnode = newChildren[newEndIndex];
     while(oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex){
-        if(isSameVnode(oldStartVnode,newStartVnode)) {
-
+        if(isSameVnode(oldStartVnode,newStartVnode)) { // 先看看前面是否一样
+            patch(oldStartVnode,newStartVnode); // 用新的属性来更新老的属性
+            oldStartVnode = oldChildren[++oldStartIndex];
+            newStartVnode = newChildren[++newStartIndex];
+        } else if(isSameVnode(oldEndVnode, newEndVnode)){ // 看看后面是否一样
+            patch(oldEndVnode,newEndVnode); // 用新的属性来更新老的属性
+            oldEndVnode = oldChildren[--oldEndIndex];
+            newEndVnode = newChildren[--newEndIndex];
+        } else if(isSameVnode(oldStartVnode, newEndVnode)) { // 倒序或正序(没写)
+            path(oldStartVnode, newEndVnode);
+            parent.insertBefore(oldStartVnode.el, oldEndVnode.el.nextSibling);
+            oldStartVnode = oldChildren[++oldStartIndex];
+            newEndVnode = newChildren[--newEndIndex];
+        }
+    }
+    if(newStartIndex <= newEndIndex){ // 如果最后还剩余 需要将剩余的插入
+        for(let i = newStartIndex; i <= newEndIndex; i++){
+            // 要插入元素
+            let ele = newChildren[newEndIndex+1] == null ? null : newChildren[newEndIndex+1].el;
+            parent.insertBefore(createElm(newChildren[i]), ele);
         }
     }
 }
